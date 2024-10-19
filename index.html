@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Augmented Reality Sukkah</title>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Helvetica, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        model-viewer {
+            width: 80%;
+            height: 70vh;
+            --poster-color: transparent;
+            background-color: transparent;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>Augmented Reality Sukkah</h1>
+    <model-viewer src="model.glb" ios-src="model.usd" alt="A 3D model" auto-rotate camera-controls disable-zoom></model-viewer>
+  </body>
+</html>
