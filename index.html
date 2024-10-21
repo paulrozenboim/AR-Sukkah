@@ -61,7 +61,7 @@
   <body>
     <div class="content">
       <h1>Augmented Reality Sukkah</h1>
-      <model-viewer 
+     <model-viewer 
           src="models/Sukkah.glb" 
           ios-src="models/Sukkah.usdz" 
           ar 
@@ -69,7 +69,10 @@
           camera-controls 
           tone-mapping="neutral" 
           shadow-intensity="1"
-          orientation="0deg 0deg -90deg">
+          orientation="0deg 0deg -90deg"
+          min-camera-orbit="auto auto 2m" <!-- Allows zooming out further -->
+          max-camera-orbit="auto auto 10m" <!-- Sets the zoom in limit -->
+          camera-orbit="auto auto 3m"> <!-- Default zoom position -->
       </model-viewer>
     </div>
     <div class="footer">
