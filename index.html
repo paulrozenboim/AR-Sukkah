@@ -1,79 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Augmented Reality Sukkah</title>
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            font-family: Helvetica, sans-serif;
-            background-color: #000000;
-            color: #ffffff;
-        }
-        .content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            width: 100%;
-        }
-        h1 {
-            margin-top: 25px;
-            font-size: 22px;
-            font-weight: 400;
-            letter-spacing: 1px;
-        }
-        model-viewer {
-            width: 80%;
-            height: 70vh;
-            --poster-color: transparent;
-            background-color: transparent;
-        }
-        .footer {
-            width: 100%;
-            text-align: center;
-            padding: 10px 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #ffffff;
-        }
-        .footer p {
-            font-size: 10px;
-            font-weight: 300;
-        }
-        .footer a {
-            letter-spacing: 1px;
-            color: #ffffff;
-            text-decoration: underline;
-            transition: opacity 0.3s ease;
-        }
-        .footer a:hover {
-            opacity: 0.7;
-        }
-    </style>
-  </head>
-  <body>
-    <div class="content">
-      <h1>Augmented Reality Sukkah</h1>
-     <model-viewer 
-          src="models/Sukkah.glb" 
-          ios-src="models/Sukkah.usdz" 
-          ar 
-          ar-modes="scene-viewer webxr quick-look" 
-          camera-controls 
-          tone-mapping="neutral" 
-          shadow-intensity="1"
-          orientation="0deg 0deg -90deg"
-      </model-viewer>
-    </div>
-    <div class="footer">
-      <p>AR Sukkah by <a href="https://www.instagram.com/unapaulogetic_" target="_blank">unapaulogetic</a></p>
-    </div>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>AR Sukkah — unapaulogetic</title>
+<meta name="description" content="Stand a sukkah in whatever room or street you are in. Point your phone at the floor — no app to install. By Paul Rozenboim.">
+
+<!-- People send this to each other during the holiday, so the preview is the
+     first thing most of them will see of it. -->
+<link rel="canonical" href="https://ar-sukkah.unapaulogetic.art/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="unapaulogetic">
+<meta property="og:title" content="AR Sukkah">
+<meta property="og:description" content="Stand a sukkah in whatever room or street you are in. Point your phone at the floor — no app to install.">
+<meta property="og:url" content="https://ar-sukkah.unapaulogetic.art/">
+<meta property="og:image" content="https://ar-sukkah.unapaulogetic.art/assets/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="A drawn sukkah standing on grass in a Tel Aviv park, its walls covered in black and white line patterns around a large eye.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AR Sukkah">
+<meta name="twitter:description" content="Stand a sukkah in whatever room or street you are in. No app to install.">
+<meta name="twitter:image" content="https://ar-sukkah.unapaulogetic.art/assets/share.jpg">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6' fill='%23c9ff36'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Handjet:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=Rubik:wght@300;400;500&display=swap">
+
+<!-- Pinned. An unpinned CDN on a site that matters for nine days a year is a
+     breaking release landing in the middle of the holiday, when nobody is at
+     a computer to fix it. -->
+<script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+
+<style>
+:root{
+  --room:#090909; --wall:#111111; --edge:#333333; --control-edge:#777771;
+  --dust:#aaa9a4; --paint:#e8e8e2; --beam:#f7f7ef; --signal:#c9ff36;
+  --font-display:Handjet, monospace;
+  --font-mono:"IBM Plex Mono", ui-monospace, monospace;
+  --font-body:Rubik, system-ui, sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--room); color:var(--paint);
+  font:400 16px/1.55 var(--font-body); -webkit-font-smoothing:antialiased;
+  display:flex; flex-direction:column;
+  /* dvh, not vh: on a phone vh includes the address bar, so the page was
+     always a little taller than the screen. */
+  min-height:100dvh;
+  padding-top:env(safe-area-inset-top, 0px);
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+}
+:focus-visible{outline:2px solid var(--signal); outline-offset:3px}
+
+header{display:flex; align-items:baseline; gap:12px; padding:14px 18px 12px}
+h1{margin:0; font-family:var(--font-display); font-weight:700; font-size:clamp(1.6rem,7vw,2.2rem);
+   line-height:1; color:var(--beam); text-transform:uppercase; letter-spacing:.02em}
+.lang{margin-inline-start:auto; display:flex; gap:4px}
+.lang button{
+  font-family:var(--font-mono); font-size:.7rem; letter-spacing:.06em; text-transform:uppercase;
+  background:transparent; color:var(--dust); border:1px solid var(--edge);
+  padding:8px 10px; min-height:40px; min-width:44px; cursor:pointer;
+}
+.lang button[aria-pressed="true"]{color:var(--signal); border-color:var(--signal)}
+
+.stage{flex:1; min-height:0; position:relative; display:flex}
+model-viewer{
+  width:100%; height:100%; background:transparent;
+  --poster-color:transparent;
+  --progress-bar-color:var(--signal);
+  --progress-mask:transparent;
+}
+
+/* The AR button is the whole point of the page, so it is not left to the
+   default corner chip. */
+.enter{
+  position:absolute; inset-inline:0; bottom:16px; margin-inline:auto; width:max-content;
+  font-family:var(--font-mono); font-size:.82rem; letter-spacing:.08em; text-transform:uppercase;
+  background:var(--signal); color:var(--room); border:1px solid var(--signal);
+  padding:14px 22px; min-height:48px; cursor:pointer; display:inline-flex; align-items:center; gap:10px;
+}
+.enter:hover{background:var(--beam); border-color:var(--beam)}
+/* model-viewer hides this slot itself when the device cannot do AR. */
+.enter[slot="ar-button"]{z-index:5}
+
+.how{padding:0 18px 16px; color:var(--dust); font-size:.92rem; max-width:52ch}
+.how strong{color:var(--paint); font-weight:500}
+.no-ar{display:none; color:var(--dust); font-size:.88rem; padding:0 18px 12px}
+body[data-ar="no"] .no-ar{display:block}
+body[data-ar="no"] .enter{display:none}
+
+footer{
+  padding:12px 18px calc(14px + env(safe-area-inset-bottom, 0px));
+  border-top:1px solid var(--edge);
+  font-family:var(--font-mono); font-size:.68rem; letter-spacing:.06em;
+  color:var(--control-edge); display:flex; gap:14px; flex-wrap:wrap; align-items:center;
+}
+footer a{color:var(--dust); text-decoration:none; border-bottom:1px solid var(--edge)}
+footer a:hover{color:var(--signal); border-color:var(--signal)}
+
+html[dir="rtl"] .lang{margin-inline-start:auto}
+html[lang="he"] h1{font-family:Handjet, monospace}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1 data-t="title">AR Sukkah</h1>
+  <div class="lang" role="group" aria-label="Language">
+    <button type="button" data-lang="en" aria-pressed="true">EN</button>
+    <button type="button" data-lang="he" aria-pressed="false">עב</button>
+  </div>
+</header>
+
+<div class="stage">
+  <model-viewer
+    src="models/Sukkah.glb"
+    ios-src="models/Sukkah.usdz"
+    poster="assets/poster.jpg"
+    alt="A drawn sukkah with a green schach roof and walls of black and white line patterns around a large eye."
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    ar-placement="floor"
+    camera-controls
+    touch-action="pan-y"
+    tone-mapping="neutral"
+    shadow-intensity="1"
+    orientation="0deg 0deg -90deg"
+    loading="eager">
+    <button class="enter" slot="ar-button" data-t="enter">Put it in the room</button>
+  </model-viewer>
+</div>
+
+<p class="how" data-t="how">
+  <strong>On a phone:</strong> tap the button, then point the camera at the floor
+  and move it slowly until the sukkah lands. <strong>On a computer:</strong> drag
+  to turn it around.
+</p>
+
+<p class="no-ar" data-t="noar">
+  This browser will not open AR. Open the page on a phone — Safari on iPhone, or
+  Chrome on Android — and the button appears.
+</p>
+
+<footer>
+  <span data-t="credit">AR Sukkah by Paul Rozenboim</span>
+  <a href="https://unapaulogetic.art/lab/" data-t="lab">More in the Lab</a>
+  <a href="https://www.instagram.com/unapaulogetic_" target="_blank" rel="noopener">Instagram</a>
+</footer>
+
+<script type="module">
+/* Two languages, because the holiday this is for is celebrated in Hebrew and
+   the page was only ever in English. The copy lives here rather than in a
+   second file: it is eleven strings. */
+const COPY = {
+  en: {
+    dir: 'ltr',
+    title: 'AR Sukkah',
+    enter: 'Put it in the room',
+    how: '<strong>On a phone:</strong> tap the button, then point the camera at the floor and move it slowly until the sukkah lands. <strong>On a computer:</strong> drag to turn it around.',
+    noar: 'This browser will not open AR. Open the page on a phone — Safari on iPhone, or Chrome on Android — and the button appears.',
+    credit: 'AR Sukkah by Paul Rozenboim',
+    lab: 'More in the Lab',
+    docTitle: 'AR Sukkah — unapaulogetic',
+  },
+  he: {
+    dir: 'rtl',
+    title: 'סוכה במציאות רבודה',
+    enter: 'להציב אותה בחדר',
+    how: '<strong>בטלפון:</strong> הקישו על הכפתור, כוונו את המצלמה לרצפה והזיזו אותה לאט עד שהסוכה תונח. <strong>במחשב:</strong> גררו כדי לסובב אותה.',
+    noar: 'הדפדפן הזה לא פותח מציאות רבודה. פתחו את הדף בטלפון — ספארי באייפון או כרום באנדרואיד — והכפתור יופיע.',
+    credit: 'סוכה במציאות רבודה מאת פול רוזנבוים',
+    lab: 'עוד במעבדה',
+    docTitle: 'סוכה במציאות רבודה — unapaulogetic',
+  },
+};
+
+const STORE = 'unapaulogetic.ar-sukkah.lang';
+
+function apply(lang) {
+  const t = COPY[lang];
+  document.documentElement.lang = lang;
+  document.documentElement.dir = t.dir;
+  document.title = t.docTitle;
+  for (const el of document.querySelectorAll('[data-t]')) {
+    const key = el.dataset.t;
+    if (t[key] === undefined) continue;
+    /* Two strings carry <strong>; the rest are plain. */
+    if (key === 'how' || key === 'noar') el.innerHTML = t[key];
+    else el.textContent = t[key];
+  }
+  for (const b of document.querySelectorAll('[data-lang]')) {
+    b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
+  }
+  try { localStorage.setItem(STORE, lang); } catch { /* private mode */ }
+}
+
+/* Remembered first, then the browser's own preference. Someone in Israel
+   should not have to ask for Hebrew. */
+let start = 'en';
+try { start = localStorage.getItem(STORE) || start; } catch { /* as above */ }
+if (!localStorage.getItem?.(STORE) && navigator.language?.startsWith('he')) start = 'he';
+apply(start);
+
+for (const b of document.querySelectorAll('[data-lang]')) {
+  b.addEventListener('click', () => apply(b.dataset.lang));
+}
+
+/* Say so when the device cannot do AR, rather than showing a button that does
+   nothing — which is what a laptop got before. */
+const viewer = document.querySelector('model-viewer');
+const checkAR = async () => {
+  const ok = viewer.canActivateAR ?? false;
+  document.body.dataset.ar = ok ? 'yes' : 'no';
+};
+viewer.addEventListener('load', checkAR);
+setTimeout(checkAR, 2500);
+</script>
+</body>
 </html>
