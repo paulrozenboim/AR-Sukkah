@@ -119,17 +119,24 @@ html[lang="he"] h1{font-family:Handjet, monospace}
   </div>
 </header>
 
+<!-- No poster attribute, deliberately. It used to open on
+     assets/poster.jpg, a photograph of the sukkah already standing in a
+     park from an earlier AR session, so the first thing anybody saw was a
+     picture of somebody else having done the thing. It loads into the real
+     model now, with the progress bar in signal green while the 4MB
+     arrives. The photograph is still in assets/ and is still the share
+     card and the Lab card, where being a photograph is the whole point.
+
+     This comment lives OUT here on purpose. An HTML comment inside an
+     opening tag is not a comment: the parser ends the tag at the first
+     closing angle bracket it meets, which is the one that closes the
+     comment, and every attribute after that point renders on the page
+     as plain text. Do not write a comment terminator inside a comment
+     either, for the same class of reason. -->
 <div class="stage">
   <model-viewer
     src="models/Sukkah.glb"
     ios-src="models/Sukkah.usdz"
-    <!-- No poster. It used to open on assets/poster.jpg, a photograph of
-         the sukkah standing in a park from an earlier AR session - so the
-         first thing anybody saw was a picture of somebody else having
-         already done the thing. It loads into the real model now, with the
-         progress bar in signal green while the 4MB arrives. The photograph
-         is still in assets/ and is still the share card and the Lab card,
-         where being a photograph is exactly the point. -->
     alt="A drawn sukkah with a green schach roof and walls of black and white line patterns around a large eye."
     ar
     ar-modes="webxr scene-viewer quick-look"
