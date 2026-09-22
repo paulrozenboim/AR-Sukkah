@@ -136,7 +136,6 @@ html[lang="he"] h1{font-family:Handjet, monospace}
 <div class="stage">
   <model-viewer
     src="models/Sukkah.glb"
-    ios-src="models/Sukkah.usdz"
     alt="A drawn sukkah with a green schach roof and walls of black and white line patterns around a large eye."
     ar
     ar-modes="webxr scene-viewer quick-look"
@@ -145,9 +144,8 @@ html[lang="he"] h1{font-family:Handjet, monospace}
     touch-action="pan-y"
     tone-mapping="neutral"
     shadow-intensity="1"
-    orientation="0deg 0deg -90deg"
     loading="eager">
-    <button class="enter" slot="ar-button" data-t="enter">Put it in the room</button>
+    <button class="enter" slot="ar-button" data-t="enter">Open Camera</button>
   </model-viewer>
 </div>
 
@@ -176,7 +174,7 @@ const COPY = {
   en: {
     dir: 'ltr',
     title: 'AR Sukkah',
-    enter: 'Put it in the room',
+    enter: 'Open Camera',
     how: '<strong>On a phone:</strong> tap the button, then point the camera at the floor and move it slowly until the sukkah lands. <strong>On a computer:</strong> drag to turn it around.',
     noar: 'This browser will not open AR. Open the page on a phone — Safari on iPhone, or Chrome on Android — and the button appears.',
     credit: 'AR Sukkah by Paul Rozenboim',
@@ -186,7 +184,7 @@ const COPY = {
   he: {
     dir: 'rtl',
     title: 'סוכה במציאות רבודה',
-    enter: 'להציב אותה בחדר',
+    enter: 'לפתוח מצלמה',
     how: '<strong>בטלפון:</strong> הקישו על הכפתור, כוונו את המצלמה לרצפה והזיזו אותה לאט עד שהסוכה תונח. <strong>במחשב:</strong> גררו כדי לסובב אותה.',
     noar: 'הדפדפן הזה לא פותח מציאות רבודה. פתחו את הדף בטלפון — ספארי באייפון או כרום באנדרואיד — והכפתור יופיע.',
     credit: 'סוכה במציאות רבודה מאת פול רוזנבוים',
