@@ -89,8 +89,18 @@ model-viewer{
 /* model-viewer hides this slot itself when the device cannot do AR. */
 .enter[slot="ar-button"]{z-index:5}
 
-.how{padding:0 18px 16px; color:var(--dust); font-size:.92rem; max-width:52ch}
-.how strong{color:var(--paint); font-weight:500}
+.how,.share{padding:0 18px 16px; color:var(--dust); font-size:.92rem; max-width:52ch}
+.share{padding-top:0; margin-top:-8px}
+.how strong,.share strong{color:var(--paint); font-weight:500}
+
+/* Sending the page on is the one thing the web can actually do here, so it
+   gets a real control rather than a line of text asking people to copy a URL. */
+.send{
+  font:inherit; letter-spacing:inherit; text-transform:inherit;
+  background:transparent; color:var(--dust); border:0; border-bottom:1px solid var(--edge);
+  padding:0 0 1px; cursor:pointer; min-height:0;
+}
+.send:hover{color:var(--signal); border-color:var(--signal)}
 .no-ar{display:none; color:var(--dust); font-size:.88rem; padding:0 18px 12px}
 body[data-ar="no"] .no-ar{display:block}
 body[data-ar="no"] .enter{display:none}
@@ -151,8 +161,14 @@ html[lang="he"] h1{font-family:Handjet, monospace}
 
 <p class="how" data-t="how">
   <strong>On a phone:</strong> tap the button, then point the camera at the floor
-  and move it slowly until the sukkah lands. <strong>On a computer:</strong> drag
-  to turn it around.
+  and move it slowly until the sukkah lands. <strong>One finger</strong> slides it
+  across the floor. <strong>Two fingers</strong> turn it and change its size.
+  <strong>On a computer:</strong> drag to turn it around.
+</p>
+
+<p class="share" data-t="share">
+  <strong>To share it:</strong> take a screenshot while the sukkah is standing
+  there, and tag <strong>@unapaulogetic_</strong> — I will repost it.
 </p>
 
 <p class="no-ar" data-t="noar">
@@ -161,6 +177,7 @@ html[lang="he"] h1{font-family:Handjet, monospace}
 </p>
 
 <footer>
+  <button type="button" class="send" data-t="send">Send this to someone</button>
   <span data-t="credit">AR Sukkah by Paul Rozenboim</span>
   <a href="https://unapaulogetic.art/lab/" data-t="lab">More in the Lab</a>
   <a href="https://www.instagram.com/unapaulogetic_" target="_blank" rel="noopener">Instagram</a>
@@ -175,7 +192,11 @@ const COPY = {
     dir: 'ltr',
     title: 'AR Sukkah',
     enter: 'Open Camera',
-    how: '<strong>On a phone:</strong> tap the button, then point the camera at the floor and move it slowly until the sukkah lands. <strong>On a computer:</strong> drag to turn it around.',
+    how: '<strong>On a phone:</strong> tap the button, then point the camera at the floor and move it slowly until the sukkah lands. <strong>One finger</strong> slides it across the floor. <strong>Two fingers</strong> turn it and change its size. <strong>On a computer:</strong> drag to turn it around.',
+    share: '<strong>To share it:</strong> take a screenshot while the sukkah is standing there, and tag <strong>@unapaulogetic_</strong> — I will repost it.',
+    send: 'Send this to someone',
+    sending: 'Build a sukkah in the room you are standing in — no app to install.',
+    sent: 'Link copied',
     noar: 'This browser will not open AR. Open the page on a phone — Safari on iPhone, or Chrome on Android — and the button appears.',
     credit: 'AR Sukkah by Paul Rozenboim',
     lab: 'More in the Lab',
@@ -185,7 +206,11 @@ const COPY = {
     dir: 'rtl',
     title: 'סוכה במציאות רבודה',
     enter: 'לפתוח מצלמה',
-    how: '<strong>בטלפון:</strong> הקישו על הכפתור, כוונו את המצלמה לרצפה והזיזו אותה לאט עד שהסוכה תונח. <strong>במחשב:</strong> גררו כדי לסובב אותה.',
+    how: '<strong>בטלפון:</strong> הקישו על הכפתור, כוונו את המצלמה לרצפה והזיזו אותה לאט עד שהסוכה תונח. <strong>אצבע אחת</strong> מזיזה אותה על הרצפה. <strong>שתי אצבעות</strong> מסובבות אותה ומשנות את הגודל. <strong>במחשב:</strong> גררו כדי לסובב אותה.',
+    share: '<strong>לשיתוף:</strong> צלמו מסך בזמן שהסוכה עומדת שם, ותייגו <strong>@unapaulogetic_</strong> — אשתף מחדש.',
+    send: 'לשלוח את זה למישהו',
+    sending: 'תבנו סוכה בחדר שאתם עומדים בו — בלי להתקין שום אפליקציה.',
+    sent: 'הקישור הועתק',
     noar: 'הדפדפן הזה לא פותח מציאות רבודה. פתחו את הדף בטלפון — ספארי באייפון או כרום באנדרואיד — והכפתור יופיע.',
     credit: 'סוכה במציאות רבודה מאת פול רוזנבוים',
     lab: 'עוד במעבדה',
@@ -203,8 +228,8 @@ function apply(lang) {
   for (const el of document.querySelectorAll('[data-t]')) {
     const key = el.dataset.t;
     if (t[key] === undefined) continue;
-    /* Two strings carry <strong>; the rest are plain. */
-    if (key === 'how' || key === 'noar') el.innerHTML = t[key];
+    /* Three strings carry <strong>; the rest are plain. */
+    if (key === 'how' || key === 'noar' || key === 'share') el.innerHTML = t[key];
     else el.textContent = t[key];
   }
   for (const b of document.querySelectorAll('[data-lang]')) {
@@ -223,6 +248,30 @@ apply(start);
 for (const b of document.querySelectorAll('[data-lang]')) {
   b.addEventListener('click', () => apply(b.dataset.lang));
 }
+
+/* Sending the page on.
+   No web page can photograph an AR session: the camera image in AR is put
+   there by the phone's own compositor, not drawn by us, and the browser never
+   hands it over. The screenshot button on the phone is the only thing that
+   catches the room and the sukkah in one picture, which is why the page asks
+   for one in words. What the page CAN do is get itself to the next person in
+   one tap, so that is the control it has. */
+const sendButton = document.querySelector('.send');
+sendButton.addEventListener('click', async () => {
+  const t = COPY[document.documentElement.lang] ?? COPY.en;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: t.docTitle, text: t.sending, url: location.href });
+      return;
+    }
+    await navigator.clipboard.writeText(location.href);
+    sendButton.textContent = t.sent;
+    setTimeout(() => { sendButton.textContent = t.send; }, 2000);
+  } catch {
+    /* Cancelled the sheet, or a browser that refuses the clipboard without a
+       permission nobody should be asked for. Neither is worth a message. */
+  }
+});
 
 /* Say so when the device cannot do AR, rather than showing a button that does
    nothing — which is what a laptop got before. */
